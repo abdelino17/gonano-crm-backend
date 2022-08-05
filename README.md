@@ -21,7 +21,7 @@ the customers API for Udacity Golang Nanodegree Project 1.
 
 1. `GET /`: API Documentation
 2. `GET /customers`: Get the list of all customers
-3. `GET /customers/{id}`: Get the list of the customer with the id corresponding
+3. `GET /customers/{id}`: Get the customer with the id corresponding
 4. `POST /customers`: Add a customer
 5. `PUT /customers/{id}`: Update a customer
 6. `DELETE /customers/{id}`: Delete a customer
