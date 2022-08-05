@@ -8,8 +8,8 @@ the customers API for Udacity Golang Nanodegree Project 1.
 ## Setup
 
 1. Install the last version of [golang](https://go.dev/doc/install) on your computer
-2. Clone this Repo `git clone https://github.com/abdelino17/crm-backend`
-3. Navigate to the new folder `cd crm-backend`
+2. Clone this Repo `git clone https://github.com/abdelino17/gonano-crm-backend`
+3. Navigate to the new folder `cd gonano-crm-backend`
 4. Run the apo with the command `go run .`
 5. If you want to change the port or address of your API, you can define the two environment variables below:
    - `SERVER_PORT` (**8080** by default)

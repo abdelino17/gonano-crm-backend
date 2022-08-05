@@ -1,4 +1,4 @@
-module abdelino17/crm-backend
+module abdelino17/gonano-crm-backend
 
 go 1.18
 

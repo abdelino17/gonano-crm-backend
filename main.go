@@ -1,6 +1,6 @@
 // Customers API
 //
-// This is the customers API for Udacity Golang Nanodegree Project 1. You can find out more about the API at https://github.com/abdelino17/crm-backend
+// This is the customers API for Udacity Golang Nanodegree Project 1. You can find out more about the API at https://github.com/abdelino17/gonano-crm-backend
 //
 // Schemes: http
 // Host: localhost:8080
