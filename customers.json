@@ -1,0 +1,26 @@
+[
+  {
+    "customer_id": "3295cbed-cdd5-4c35-a3a8-343081a0fa0d",
+    "name": "Alice",
+    "role": "CEO",
+    "email": "alice@udacity.com",
+    "phone": "+123400000",
+    "contacted": true
+  },
+  {
+    "customer_id": "0ff636c3-6105-4ef1-9e32-9d3fd07a6619",
+    "name": "Bob",
+    "role": "CTO",
+    "email": "bob@udacity.com",
+    "phone": "+33000000000",
+    "contacted": false
+  },
+  {
+    "customer_id": "db5c6d09-3a52-4b03-909c-d32908132f30",
+    "name": "Cedric",
+    "role": "Developer",
+    "email": "cedric@udacity.com",
+    "phone": "+86000000000",
+    "contacted": true
+  }
+]
