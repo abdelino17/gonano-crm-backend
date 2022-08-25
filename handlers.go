@@ -11,7 +11,19 @@ import (
 )
 
 type CustomerHandlers struct {
-	customers []Customer
+	customers map[string]Customer
+}
+
+func NewCustomerHandlers(myCustomers []Customer) CustomerHandlers {
+	customers := make(map[string]Customer)
+
+	for _, customer := range myCustomers {
+		customers[customer.Id] = customer
+	}
+
+	return CustomerHandlers{
+		customers,
+	}
 }
 
 // swagger:operation GET /customers GetCustomers
@@ -20,8 +32,9 @@ type CustomerHandlers struct {
 // produces:
 // - application/json
 // responses:
-//	  '200':
-//	      description: Successful operation
+//
+//	'200':
+//	    description: Successful operation
 func (ch *CustomerHandlers) GetCustomers(w http.ResponseWriter, r *http.Request) {
 	writeResponse(w, http.StatusOK, ch.customers)
 }
@@ -32,10 +45,11 @@ func (ch *CustomerHandlers) GetCustomers(w http.ResponseWriter, r *http.Request)
 // produces:
 // - application/json
 // responses:
-//     '201':
-//         description: Successful operation
-//     '422':
-//         description: Invalid customer data
+//
+//	'201':
+//	    description: Successful operation
+//	'422':
+//	    description: Invalid customer data
 func (ch *CustomerHandlers) AddCustomer(w http.ResponseWriter, r *http.Request) {
 	var customer Customer
 
@@ -47,7 +61,7 @@ func (ch *CustomerHandlers) AddCustomer(w http.ResponseWriter, r *http.Request) 
 	}
 
 	customer.Id = uuid.NewString()
-	ch.customers = append(ch.customers, customer)
+	ch.customers[customer.Id] = customer
 	writeResponse(w, http.StatusCreated, customer)
 }
 
@@ -62,23 +76,25 @@ func (ch *CustomerHandlers) AddCustomer(w http.ResponseWriter, r *http.Request) 
 //     description: customer ID
 //     required: true
 //     type: string
+//
 // responses:
-//     '200':
-//         description: Successful operation
-//     '404':
-//         description: Not found
+//
+//	'200':
+//	    description: Successful operation
+//	'404':
+//	    description: Not found
 func (ch *CustomerHandlers) GetCustomer(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
 	log.Println("Get customer operation")
-	index := ch.findCustomer(id)
-	if index == -1 {
+	customer, ok := ch.customers[id]
+	if !ok {
 		writeResponse(w, http.StatusNotFound, NewNotFoundError("This customer does not exist"))
 		return
 	}
 
-	writeResponse(w, http.StatusOK, ch.customers[index])
+	writeResponse(w, http.StatusOK, customer)
 }
 
 // swagger:operation PUT /customers/{id} UpdateCustomer
@@ -92,35 +108,37 @@ func (ch *CustomerHandlers) GetCustomer(w http.ResponseWriter, r *http.Request) 
 //     description: customer ID
 //     required: true
 //     type: string
+//
 // responses:
-//     '200':
-//         description: Successful operation
-//     '404':
-//         description: Not found
-//     '422':
-//         description: Invalid customer data
+//
+//	'200':
+//	    description: Successful operation
+//	'404':
+//	    description: Not found
+//	'422':
+//	    description: Invalid customer data
 func (ch *CustomerHandlers) UpdateCustomer(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
 	log.Println("Update customer operation")
-	index := ch.findCustomer(id)
-	if index == -1 {
+	_, ok := ch.customers[id]
+	if !ok {
 		writeResponse(w, http.StatusNotFound, NewNotFoundError("This customer does not exist"))
 		return
 	}
 
-	var customer Customer
+	var updatedCustomer Customer
 
 	reqBody, _ := ioutil.ReadAll(r.Body)
-	if err := json.Unmarshal(reqBody, &customer); err != nil {
+	if err := json.Unmarshal(reqBody, &updatedCustomer); err != nil {
 		writeResponse(w, http.StatusUnprocessableEntity, NewValidationError("Invalid customer data"))
 		return
 	}
-	customer.Id = id
-	ch.customers[index] = customer
+	updatedCustomer.Id = id
 
-	writeResponse(w, http.StatusOK, ch.customers[index])
+	ch.customers[id] = updatedCustomer
+	writeResponse(w, http.StatusOK, updatedCustomer)
 }
 
 // swagger:operation DELETE /customers/{id} DeleteCustomer
@@ -134,35 +152,24 @@ func (ch *CustomerHandlers) UpdateCustomer(w http.ResponseWriter, r *http.Reques
 //     description: customer ID
 //     required: true
 //     type: string
+//
 // responses:
-//     '200':
-//         description: Successful operation
-//     '404':
-//         description: Not found
+//
+//	'200':
+//	    description: Successful operation
+//	'404':
+//	    description: Not found
 func (ch *CustomerHandlers) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
 	log.Println("Delete customer operation")
-	index := ch.findCustomer(id)
-	if index == -1 {
+	_, ok := ch.customers[id]
+	if !ok {
 		writeResponse(w, http.StatusNotFound, NewNotFoundError("This customer does not exist"))
 		return
 	}
 
-	ch.customers = append(ch.customers[:index], ch.customers[index+1:]...)
-
+	delete(ch.customers, id)
 	writeResponse(w, http.StatusOK, "Customer has been deleted")
-}
-
-func (ch *CustomerHandlers) findCustomer(id string) int {
-	var index int = -1
-
-	for i := 0; i < len(ch.customers); i++ {
-		if ch.customers[i].Id == id {
-			index = i
-		}
-	}
-
-	return index
 }

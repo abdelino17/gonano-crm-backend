@@ -41,14 +41,14 @@ func init() {
 	}
 
 	if os.Getenv("SERVER_ADDRESS") != "" {
-		port = os.Getenv("SERVER_ADDRESS")
+		address = os.Getenv("SERVER_ADDRESS")
 	}
 }
 
 func main() {
 
 	router := mux.NewRouter()
-	ch := CustomerHandlers{customers}
+	ch := NewCustomerHandlers(customers)
 
 	router.HandleFunc("/", showHomePage).Methods(http.MethodGet).Name("HomePage")
 	router.HandleFunc("/customers", ch.GetCustomers).Methods(http.MethodGet).Name("GetCustomers")
