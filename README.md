@@ -1,6 +1,6 @@
 # Customers API
 
-![go](https://img.shields.io/badge/go-1.18-informational)
+![go](https://img.shields.io/badge/go-1.21-informational)
 ![Twitter Follow](https://img.shields.io/twitter/follow/abdelFare?logoColor=lime&style=social)
 
 the customers API for Udacity Golang Nanodegree Project 1.
