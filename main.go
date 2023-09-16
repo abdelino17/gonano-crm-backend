@@ -31,6 +31,11 @@ var port string = "8080"
 
 var customers []Customer
 
+var (
+	// Version is the git reference injected at build
+	Version string
+)
+
 func init() {
 	customers = make([]Customer, 0)
 	file, _ := os.ReadFile("customers.json")
