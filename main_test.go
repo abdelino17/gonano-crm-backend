@@ -1,106 +1,109 @@
 package main
 
-// import (
-// 	"net/http"
-// 	"net/http/httptest"
-// 	"strings"
-// 	"testing"
-// )
+import (
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+)
 
-// // Tests happy path of submitting a well-formed GET /customers request
-// func TestGetCustomersHandler(t *testing.T) {
-// 	req, err := http.NewRequest("GET", "/customers", nil)
+var ch = NewCustomerHandlers(customers)
 
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
+// Tests happy path of submitting a well-formed GET /customers request
+func TestGetCustomersHandler(t *testing.T) {
+	req, err := http.NewRequest("GET", "/customers", nil)
 
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(getCustomers)
-// 	handler.ServeHTTP(rr, req)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 	// Checks for 200 status code
-// 	if status := rr.Code; status != http.StatusOK {
-// 		t.Errorf("getCustomers returned wrong status code: got %v want %v",
-// 			status, http.StatusOK)
-// 	}
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(ch.GetCustomers)
+	handler.ServeHTTP(rr, req)
 
-// 	// Checks for JSON response
-// 	if ctype := rr.Header().Get("Content-Type"); ctype != "application/json" {
-// 		t.Errorf("Content-Type does not match: got %v want %v",
-// 			ctype, "application/json")
-// 	}
-// }
+	// Checks for 200 status code
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("getCustomers returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
 
-// // Tests happy path of submitting a well-formed POST /customers request
-// func TestAddCustomerHandler(t *testing.T) {
-// 	requestBody := strings.NewReader(`
-// 		{
-// 			"name": "Example Name",
-// 			"role": "Example Role",
-// 			"email": "Example Email",
-// 			"phone": 5550199,
-// 			"contacted": true
-// 		}
-// 	`)
+	// Checks for JSON response
+	if ctype := rr.Header().Get("Content-Type"); ctype != "application/json" {
+		t.Errorf("Content-Type does not match: got %v want %v",
+			ctype, "application/json")
+	}
+}
 
-// 	req, err := http.NewRequest("POST", "/customers", requestBody)
+// Tests happy path of submitting a well-formed POST /customers request
+func TestAddCustomerHandler(t *testing.T) {
+	requestBody := strings.NewReader(`
+		{
+			"customer_id": "test-01",
+    	"name": "Alice",
+    	"role": "CEO",
+    	"email": "alice@udacity.com",
+    	"phone": "+123400000",
+    	"contacted": true
+		}
+	`)
 
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
+	req, err := http.NewRequest("POST", "/customers", requestBody)
 
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(addCustomer)
-// 	handler.ServeHTTP(rr, req)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 	// Checks for 201 status code
-// 	if status := rr.Code; status != http.StatusCreated {
-// 		t.Errorf("addCustomer returned wrong status code: got %v want %v",
-// 			status, http.StatusCreated)
-// 	}
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(ch.AddCustomer)
+	handler.ServeHTTP(rr, req)
 
-// 	// Checks for JSON response
-// 	if ctype := rr.Header().Get("Content-Type"); ctype != "application/json" {
-// 		t.Errorf("Content-Type does not match: got %v want %v",
-// 			ctype, "application/json")
-// 	}
-// }
+	// Checks for 201 status code
+	if status := rr.Code; status != http.StatusCreated {
+		t.Errorf("addCustomer returned wrong status code: got %v want %v",
+			status, http.StatusCreated)
+	}
 
-// // Tests unhappy path of deleting a user that doesn't exist
-// func TestDeleteCustomerHandler(t *testing.T) {
-// 	req, err := http.NewRequest("DELETE", "/customers/e7847fee-3a0e-455e-b151-519bdb9851c7", nil)
+	// Checks for JSON response
+	if ctype := rr.Header().Get("Content-Type"); ctype != "application/json" {
+		t.Errorf("Content-Type does not match: got %v want %v",
+			ctype, "application/json")
+	}
+}
 
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
+// Tests unhappy path of deleting a user that doesn't exist
+func TestDeleteCustomerHandler(t *testing.T) {
+	req, err := http.NewRequest("DELETE", "/customers/3295cbed-cdd5-4c35-a3a8-343081a0fa0d", nil)
 
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(deleteCustomer)
-// 	handler.ServeHTTP(rr, req)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 	// Checks for 404 status code
-// 	if status := rr.Code; status != http.StatusNotFound {
-// 		t.Errorf("deleteCustomer returned wrong status code: got %v want %v",
-// 			status, http.StatusNotFound)
-// 	}
-// }
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(ch.DeleteCustomer)
+	handler.ServeHTTP(rr, req)
 
-// // Tests unhappy path of getting a user that doesn't exist
-// func TestGetCustomerHandler(t *testing.T) {
-// 	req, err := http.NewRequest("GET", "/customers/e7847fee-3a0e-455e-b151-519bdb9851c7", nil)
+	// Checks for 404 status code
+	if status := rr.Code; status != http.StatusNotFound {
+		t.Errorf("deleteCustomer returned wrong status code: got %v want %v",
+			status, http.StatusNotFound)
+	}
+}
 
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
+// Tests unhappy path of getting a user that doesn't exist
+func TestGetCustomerHandler(t *testing.T) {
+	req, err := http.NewRequest("GET", "/customers/3295cbed-cdd5-4c35-a3a8-343081a0fa0d", nil)
 
-// 	rr := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(getCustomer)
-// 	handler.ServeHTTP(rr, req)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-// 	// Checks for 404 status code
-// 	if status := rr.Code; status != http.StatusNotFound {
-// 		t.Errorf("getCustomer returned wrong status code: got %v want %v",
-// 			status, http.StatusNotFound)
-// 	}
-// }
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(ch.GetCustomer)
+	handler.ServeHTTP(rr, req)
+
+	// Checks for 404 status code
+	if status := rr.Code; status != http.StatusNotFound {
+		t.Errorf("getCustomer returned wrong status code: got %v want %v",
+			status, http.StatusNotFound)
+	}
+}
