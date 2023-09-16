@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 
@@ -54,7 +54,7 @@ func (ch *CustomerHandlers) AddCustomer(w http.ResponseWriter, r *http.Request) 
 	var customer Customer
 
 	log.Println("Add customer operation")
-	reqBody, _ := ioutil.ReadAll(r.Body)
+	reqBody, _ := io.ReadAll(r.Body)
 	if err := json.Unmarshal(reqBody, &customer); err != nil {
 		writeResponse(w, http.StatusUnprocessableEntity, NewValidationError("Invalid customer data"))
 		return
@@ -130,7 +130,7 @@ func (ch *CustomerHandlers) UpdateCustomer(w http.ResponseWriter, r *http.Reques
 
 	var updatedCustomer Customer
 
-	reqBody, _ := ioutil.ReadAll(r.Body)
+	reqBody, _ := io.ReadAll(r.Body)
 	if err := json.Unmarshal(reqBody, &updatedCustomer); err != nil {
 		writeResponse(w, http.StatusUnprocessableEntity, NewValidationError("Invalid customer data"))
 		return

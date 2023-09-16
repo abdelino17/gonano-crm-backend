@@ -1,4 +1,4 @@
-name: tweeter-automation
+name: crm-backend
 
 on:
   push:
